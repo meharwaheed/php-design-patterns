@@ -83,6 +83,11 @@ class ConcreteCreator1 extends Creator
     {
         return new ConcreteProduct1();
     }
+
+    public function someOperation(): string
+    {
+        return "Overridden Some Operation";
+    }
 }
 
 class ConcreteCreator2 extends Creator
@@ -140,7 +145,7 @@ function clientCode(Creator $creator)
  */
 echo "App: Launched with the ConcreteCreator1.<br>";
 clientCode(new ConcreteCreator1());
-echo "<br>";
+echo "<br><br>";
 
 echo "App: Launched with the ConcreteCreator2.<br>";
 clientCode(new ConcreteCreator2());
