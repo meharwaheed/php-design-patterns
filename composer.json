@@ -1,0 +1,16 @@
+{
+    "name": "abdul-waheed/php-design-patterns",
+    "description": "Design Patterns in PHP",
+    "autoload": {
+        "psr-4": {
+            "DesignPatterns\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "AbdulWaheed"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
