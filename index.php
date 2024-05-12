@@ -19,6 +19,11 @@ use DesignPatterns\Creational\Structural\Adapter\SlackNotification;
 use DesignPatterns\Creational\Structural\Bridge\SimplePage;
 use DesignPatterns\Creational\Structural\Bridge\Product;
 use DesignPatterns\Creational\Structural\Bridge\ProductPage;
+use DesignPatterns\Creational\Structural\Composite\FormElement;
+use DesignPatterns\Creational\Structural\Composite\Form;
+use DesignPatterns\Creational\Structural\Composite\FieldComposite;
+use DesignPatterns\Creational\Structural\Composite\Fieldset;
+use DesignPatterns\Creational\Structural\Composite\Input;
 
 try {
 
@@ -214,6 +219,73 @@ try {
     echo "JSON view of a simple content page, with the same client code:<br>";
     echo $page->view();
     echo "<br> <br>";
+
+
+
+
+    /**
+     * Composite
+     */
+
+    echo "<br> <br>";
+    echo "Composite";
+    echo "<br> <br>";
+
+    /**
+     * The client code gets a convenient interface for building complex tree
+     * structures.
+     */
+    function getProductForm(): FormElement
+    {
+        $form = new Form('product', "Add product", "/product/add");
+        $form->add(new Input('name', "Name", 'text'));
+        $form->add(new Input('description', "Description", 'text'));
+
+        $picture = new Fieldset('photo', "Product photo");
+        $picture->add(new Input('caption', "Caption", 'text'));
+        $picture->add(new Input('image', "Image", 'file'));
+        $form->add($picture);
+
+        return $form;
+    }
+
+    /**
+     * The form structure can be filled with data from various sources. The Client
+     * doesn't have to traverse through all form fields to assign data to various
+     * fields since the form itself can handle that.
+     */
+    function loadProductData(FormElement $form)
+    {
+        $data = [
+            'name' => 'Apple MacBook',
+            'description' => 'A decent laptop.',
+            'photo' => [
+                'caption' => 'Front photo.',
+                'image' => 'photo1.png',
+            ],
+        ];
+
+        $form->setData($data);
+    }
+
+    /**
+     * The client code can work with form elements using the abstract interface.
+     * This way, it doesn't matter whether the client works with a simple component
+     * or a complex composite tree.
+     */
+    function renderProduct(FormElement $form)
+    {
+        // ..
+
+        echo $form->render();
+
+        // ..
+    }
+
+    $form = getProductForm();
+    loadProductData($form);
+    renderProduct($form);
+
 
 
 
