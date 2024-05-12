@@ -7,10 +7,19 @@ use DesignPatterns\Creational\Factory\SocialNetworkPoster;
 use DesignPatterns\Creational\Factory\FacebookPoster;
 use DesignPatterns\Creational\Factory\LinkedInPoster;
 use DesignPatterns\Creational\Builder\MysqlQueryBuilder;
+use DesignPatterns\Creational\Structural\Bridge\HTMLRenderer;
+use DesignPatterns\Creational\Structural\Bridge\JsonRenderer;
 use DesignPatterns\Database\MysqlConnection;
 use DesignPatterns\Creational\Prototype\Author;
 use DesignPatterns\Creational\Prototype\Page;
 use DesignPatterns\Creational\Singleton\Singleton;
+use DesignPatterns\Creational\Structural\Adapter\EmailNotification;
+use DesignPatterns\Creational\Structural\Adapter\Services\SlackApi;
+use DesignPatterns\Creational\Structural\Adapter\SlackNotification;
+use DesignPatterns\Creational\Structural\Bridge\SimplePage;
+use DesignPatterns\Creational\Structural\Bridge\Product;
+use DesignPatterns\Creational\Structural\Bridge\ProductPage;
+
 try {
 
     ###################################  Creational   ####################################
@@ -95,13 +104,13 @@ try {
     /**
      * Insert Data
      */
-    $userData['name'] = "Abdul Waheed";
-    $userData['email'] = 'waheedbajeed@gmail.com';
-    $userData['password'] = '123456789';
-
-    $queryBuilder->insert('users', $userData);
-    echo "<br> <br>";
-    echo $queryBuilder->getQuery() ."<br>";
+//    $userData['name'] = "Abdul Waheed";
+//    $userData['email'] = 'waheedbajeed@gmail.com';
+//    $userData['password'] = '123456789';
+//
+//    $queryBuilder->insert('users', $userData);
+//    echo "<br> <br>";
+//    echo $queryBuilder->getQuery() ."<br>";
 
 
     /**
@@ -136,6 +145,79 @@ try {
     } else {
         echo "Singleton failed, variables contain different instances.";
     }
+
+
+
+    /**
+     * Structural
+     */
+
+
+    /**
+     * Adapter
+     */
+
+    echo "<br> <br>";
+    echo "Adapter";
+    echo "<br> <br>";
+    echo "Client code is designed correctly and works with email notifications:\n";
+    $notification = new EmailNotification("developers@example.com");
+    $notification->send('Title', "message");
+
+
+    $slackApi = new SlackApi('waheedbajeed@gmail.com', '123456789');
+    $notification = new SlackNotification($slackApi, '123');
+    $notification->send('Title', "message");
+
+
+    /**
+     * Bridge
+     */
+
+    echo "<br> <br>";
+    echo "Bridge";
+    echo "<br> <br>";
+
+    /**
+     * The client code can be executed with any pre-configured combination of the
+     * Abstraction+Implementation.
+     */
+    $HTMLRenderer = new HTMLRenderer();
+    $JSONRenderer = new JSONRenderer();
+
+    $page = new SimplePage($HTMLRenderer, "Home", "Welcome to our website!");
+    echo "HTML view of a simple content page:<br>";
+    echo $page->view();
+    echo "<br> <br>";
+
+
+    /**
+     * The Abstraction can change the linked Implementation at runtime if needed.
+     */
+    $page->changeRenderer($JSONRenderer);
+    echo "JSON view of a simple content page, rendered with the same client code:<br>";
+    echo $page->view();
+    echo "<br> <br>";
+
+
+    $product = new Product("123", "Star Wars, episode1",
+        "A long time ago in a galaxy far, far away...",
+        "/images/star-wars.jpeg", 39.95);
+
+    $page = new ProductPage($HTMLRenderer, $product);
+    echo "HTML view of a product page, same client code:<br>";
+    echo $page->view();
+    echo "<br> <br>";
+
+
+    $page->changeRenderer($JSONRenderer);
+    echo "JSON view of a simple content page, with the same client code:<br>";
+    echo $page->view();
+    echo "<br> <br>";
+
+
+
+
 
 
 } catch (Throwable $exception) {
